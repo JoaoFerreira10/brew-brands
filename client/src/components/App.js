@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Container, Box, Heading, Card, Image, Text, Spinner} from 'gestalt';
+import {Container, Box, Heading, Card, Image, Text, SearchField, Spinner} from 'gestalt';
 import {Link} from 'react-router-dom';
 import "./App.css";
 import Strapi from 'strapi-sdk-javascript/build/main';
@@ -10,7 +10,7 @@ const strapi = new Strapi(apiUrl);
 class App extends Component {
 
 
-  state = { brands: [], loading: true};
+  state = { brands: [], loading: true, searchTerm: ''};
 
 async componentDidMount(){
 
@@ -41,8 +41,31 @@ async componentDidMount(){
 
 }
 
+handleSearch = ({value })=>{
+  this.setState({searchTerm: value});
+
+
+}
+
+filteredBrands = (searchTerm, brands)=>{
+  return brands.filter(brand => brand.name.toLowerCase().includes(searchTerm.toLowerCase()));
+}
+
+
   render() {
-    return (<Container>
+
+    const {
+      brands,
+      searchTerm,
+      loading
+    } = this.state;
+
+    return (
+    <Container>
+
+      <Box  display="flex" justifyContent="center" marginTop={4}>
+        <SearchField id="search-field" accessibilityLabel="Search field" placeholder="Search" onChange={this.handleSearch}/>
+      </Box>
       <Box display="flex" justifyContent="center">
         <Heading color="midnight" size="md">
           Brew Brands
@@ -50,28 +73,29 @@ async componentDidMount(){
       </Box>
       <Box wrap display="flex" justifyContent="around">
           {
-            this.state.brands.map(brand =>(
+            this.filteredBrands(searchTerm, brands).map(brand =>(
               <Box paddingY={4} margin={2} width={200} key={brand._id}> 
                 <Card>
                   
-                    <Box height={200} width={200} paddingY={1}>
+                    <Box height={200} width={200} paddingY={2}>
                       <Image
                       alt="Brand"
                       naturalHeight={1}
-                      naturalWidth={1}
                       src={`${apiUrl}${brand.image[0] && brand.image[0].url}`}
                       />
                     </Box>
                   
                 </Card> 
-                <Text size="xl">{brand.name}</Text>
+                <Text bold size="xl">{brand.name}</Text>
                 <Text>{brand.description}</Text>
-                <Link to={brand._id}>More info</Link>
+                <Text size="lg">
+                <Link to={brand._id}>See Brews</Link>
+                </Text>
               </Box>
             ))
           }
       </Box>
-      <Spinner show={this.state.loading} accessibilityLabel="Show Spinner"></Spinner>
+      <Spinner show={loading} accessibilityLabel="Show Spinner"></Spinner>
     </Container>);
   }
 }

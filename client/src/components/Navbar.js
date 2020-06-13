@@ -10,7 +10,6 @@ const Navbar = () => (
     height={70}
     color="midnight"
     padding={1}
-    shape="roundedBottom"
   >
     {/* Sign In Link */}
     <NavLink activeClassName="active" to="/signin">
