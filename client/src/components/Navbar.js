@@ -1,6 +1,7 @@
 import React from "react";
-import { Box, Text, Heading, Image } from "gestalt";
+import { Box, Text, Heading, Image, Button } from "gestalt";
 import { NavLink } from "react-router-dom";
+import { getToken, clearToken } from "../utils";
 
 const Navbar = () => (
   <Box
@@ -37,9 +38,12 @@ const Navbar = () => (
 
     {/* Sign Up Link */}
     <NavLink activeClassName="active" to="/signup">
-      <Text size="xl" color="white">
-        Sign Up
-      </Text>
+      {getToken() === null ?
+            <Text size="xl" color="white">
+            Sign Up
+          </Text>: 
+          <Button text= "Sign out" color="transparent" size="md" onClick={() => clearToken()}></Button>}
+
     </NavLink>
   </Box>
 );

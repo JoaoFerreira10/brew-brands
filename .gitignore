@@ -1,0 +1,4 @@
+server
+client/node_modules
+strapi-instructions
+.DS_Store
